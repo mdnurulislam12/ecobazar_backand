@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 app = FastAPI()
 
+# Replace with your actual frontend origins
 origins = [
-    "http://localhost:3000",
-    "https://eco-bazar-psi.vercel.app"
+    "http://localhost:3000",  # For local development
+    "https://eco-bazar-psi.vercel.app", # your production frontend
+    # Add other origins as needed
 ]
 
 app.add_middleware(
@@ -15,19 +17,18 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
-# Define the Product model
 class Product(BaseModel):
     id: int
     name: str
     price: float
-    oldPrice: float | None=None
+    oldPrice: Optional[float] = None
     quantity: int
     image: str
     thumbnails: List[str]
-    sale: str | None = None
+    sale: Optional[str] = None
     rating: int
     stock: str
     description: str
@@ -2028,4 +2029,3 @@ async def get_hotDeals_product():
 @app.get("/data/all_product", response_model=List[Product])
 async def get_all_product():
     return data["all_product"]
-
