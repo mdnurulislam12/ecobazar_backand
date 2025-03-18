@@ -2013,3 +2013,19 @@ data = {
 async def get_featured_products():
     return data["featured_products"]
 
+@app.get("/data/popular_categories", response_model=List[Product])
+async def get_popular_categories():
+    return data["popular_categories"]
+
+@app.get("/data/popular_product", response_model=List[Product])
+async def get_popular_product():
+    return data["popular_product"]
+
+@app.get("/data/hotDeals_product", response_model=List[Product])
+async def get_hotDeals_product():
+    return data["hotDeals_product"]
+
+@app.get("/data/all_product", response_model=List[Product])
+async def get_all_product():
+    return data["all_product"]
+
