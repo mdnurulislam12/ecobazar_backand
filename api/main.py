@@ -1,15 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
+from mangum import Mangum
 
 app = FastAPI()
 
-# Replace with your actual frontend origins
 origins = [
-    "http://localhost:3000",  # For local development
-    "https://eco-bazar-psi.vercel.app", # your production frontend
-    # Add other origins as needed
+    "http://localhost:3000",
+    "https://eco-bazar-psi.vercel.app/"
 ]
 
 app.add_middleware(
@@ -36,6 +35,7 @@ class Product(BaseModel):
     sku: str
     category: str
     tags: List[str]
+
     
 data = {
   "featured_products": [
@@ -2010,6 +2010,7 @@ data = {
   ]
 }
 
+
 @app.get("/data/featured_products", response_model=List[Product])
 async def get_featured_products():
     return data["featured_products"]
@@ -2019,13 +2020,23 @@ async def get_popular_categories():
     return data["popular_categories"]
 
 @app.get("/data/popular_product", response_model=List[Product])
-async def get_popular_product():
-    return data["popular_product"]
+async def get_popular_products():
+    return ["popular_product"]
 
 @app.get("/data/hotDeals_product", response_model=List[Product])
-async def get_hotDeals_product():
+async def get_hot_deals_products():
     return data["hotDeals_product"]
 
-@app.get("/data/all_product", response_model=List[Product])
-async def get_all_product():
-    return data["all_product"]
+@app.get("/api/products/{product_id}", response_model=Product)
+async def get_product(product_id: int):
+    raise HTTPException(status_code=404, detail="Product not found")
+
+@app.get("/api/products/category/{category}", response_model=List[Product])
+async def get_products_by_category(category: str):
+    raise HTTPException(status_code=404, detail="Category not found")
+
+@app.get("/")
+def home():
+    return data
+
+handler = Mangum(app)
